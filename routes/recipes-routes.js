@@ -9,3 +9,11 @@ router.get('/', async (req, res) => {
 });
 
 module.exports = router;
+
+
+
+
+// Show new recipe form
+router.get('/new', (req, res) => {
+  res.render('recipes/newRecipe');
+});
