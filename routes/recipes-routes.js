@@ -41,3 +41,11 @@ router.get('/:id/update', async (req, res) => {
   const recipe = await Recipe.findById(req.params.id);
   res.render('recipes/recipeUpdate', { recipe });
 });
+
+
+// Update recipe
+router.put('/:id', async (req, res) => {
+  const { name, ingredients, instructions } = req.body;
+  await Recipe.findByIdAndUpdate(req.params.id, { name, ingredients, instructions });
+  res.redirect(`/recipes/${req.params.id}`);
+});
