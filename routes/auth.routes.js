@@ -41,3 +41,30 @@ router.get('/logout', (req, res) => {
 });
 
 module.exports = router;
+
+
+// Sign up logic 
+router.post('/sign-up', async (req, res) => {
+  const { username, password } = req.body;
+  const userExists = await User.findOne({ username });
+  if (userExists) {
+    return res.send('Username already exists');
+  }
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = new User({ username, password: hashedPassword });
+  await newUser.save();
+  res.redirect('/login');
+});
+
+
+// Login logic 
+router.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
+  if (user && await bcrypt.compare(password, user.password)) {
+    req.session.userId = user._id;
+    res.redirect('/recipes');
+  } else {
+    res.redirect('/login');
+  }
+});
