@@ -1,70 +1,62 @@
-const express = require('express');
-const router = express.Router();
-const bcrypt = require('bcryptjs');
-const User = require('../models/User');
-
-// Sign up page
-router.get('/sign-up', (req, res) => {
-  res.render('auth/sign-up');
-});
-
-// Sign up logic
-router.post('/sign-up', async (req, res) => {
-  const { username, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = new User({ username, password: hashedPassword });
-  await newUser.save();
-  res.redirect('/login');
-});
-
-// Login page
-router.get('/login', (req, res) => {
-  res.render('auth/login');
-});
-
-// Login logic
-router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-  const user = await User.findOne({ username });
-  if (user && await bcrypt.compare(password, user.password)) {
-    req.session.userId = user._id;
-    res.redirect('/recipes');
-  } else {
-    res.redirect('/login');
-  }
-});
-
-// Logout logic
-router.get('/logout', (req, res) => {
-  req.session.destroy();
-  res.redirect('/');
-});
-
-module.exports = router;
+const router = require("express").Router()
+const User = require("../models/User")
+const bcrypt = require("bcrypt")
 
 
-// Sign up logic 
-router.post('/sign-up', async (req, res) => {
-  const { username, password } = req.body;
-  const userExists = await User.findOne({ username });
-  if (userExists) {
-    return res.send('Username already exists');
-  }
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = new User({ username, password: hashedPassword });
-  await newUser.save();
-  res.redirect('/login');
-});
+router.get("/sign-up",(req,res)=>{
+    res.render("auth/sign-up.ejs")
+})
+
+router.post("/sign-up",async(req,res)=>{
+    try{
+
+        
+        const hashedPassword = bcrypt.hashSync(req.body.password,10) // encrypts our password
+
+        req.body.password = hashedPassword
+
+        await User.create(req.body)
+
+        res.redirect("/auth/login")
+    }
+    catch(error){
+        console.log(error)
+    }
+})
 
 
-// Login logic 
-router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-  const user = await User.findOne({ username });
-  if (user && await bcrypt.compare(password, user.password)) {
-    req.session.userId = user._id;
-    res.redirect('/recipes');
-  } else {
-    res.redirect('/login');
-  }
-});
+router.get("/login",(req,res)=>{
+    res.render("auth/login.ejs")
+})
+
+router.post("/login",async(req,res)=>{
+    try{
+        const foundUser = await User.findOne({username:req.body.username})
+        console.log(req.body)
+        const validPassword = bcrypt.compareSync(req.body.password,foundUser.password)
+        console.log(validPassword)
+
+        if(!validPassword){
+            return res.send("Password is incorrect")
+        }  
+        // creates a session for our user once they are logged in
+        req.session.user = {
+            username: foundUser.username,
+            _id: foundUser._id
+        }
+
+        res.redirect("/recipes")
+
+    }
+    catch(error){
+
+    }
+})
+
+
+router.get("/logout",(req,res)=>{
+    req.session.destroy()
+    res.redirect("/auth/login")
+})
+
+module.exports = router

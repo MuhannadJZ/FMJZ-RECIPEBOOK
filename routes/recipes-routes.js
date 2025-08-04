@@ -1,70 +1,126 @@
-const express = require('express');
-const router = express.Router();
-const Recipe = require('../models/Recipe');
+const Recipe = require('../models/Recipe')
+const router= require("express").Router()
 
-// Show all recipes
-router.get('/', async (req, res) => {
-  const recipes = await Recipe.find();
-  res.render('recipes/allRecipes', { recipes });
+router.get("/", (req,res)=> {
+    res.render("recipes.ejs")
+})
+
+
+// For posting we need 2 routes
+
+router.get("/new",(req,res)=>{
+
+    res.render("recipes-create.ejs")
+})
+
+
+router.post("/new",async (req,res)=>{
+    try{
+        if(req.body.image === '') {
+            req.body.image = undefined
+        }
+    await Recipe.create(req.body)
+    res.redirect("/recipes/community")
+
+    }catch(error){
+        console.log(error)
+    }
+})
+
+router.get("/community",async (req,res)=>{
+    try{
+        const allRecipes = await Recipe.find()
+        console.log("allrecipes" + allRecipes)
+        res.render("allRecipes.ejs", {allRecipes: allRecipes})
+        
+    }
+    catch(error){
+        console.log(error)
+    }
+})
+
+/* 
+1. create a router.get()
+2. this router.get() should get the recipe by the id
+3. pass the recipe that is found to the ejs page and render it using res.render()
+4. display the values in the ejs page
+ /:id
+*/
+
+
+const express = require('express');
+const Router = express.Router();
+
+router.get("/:recipeId",async (req,res)=>{
+    console.log(req.params)
+    try{
+    const foundRecipe = await Recipe.findById(req.params.recipeId)
+    console.log(foundRecipe)
+    res.render("recipe-read.ejs",{foundRecipe})
+
+    }
+    catch(error){
+        console.log(error)
+    }
+})
+
+
+//
+
+router.get("/:id/update", async (req,res) => {
+    try {
+        const foundRecipe = await Recipe.findById(req.params.id);
+        res.render("Recipe-Update.ejs", { foundRecipe: foundRecipe });
+    } catch (error) {
+        console.log(error);
+        res.send("Error");
+    }
 });
 
+router.put("/:id", async (req,res) => {
+    try {
+        await Recipe.findByIdAndUpdate(req.params.id, req.body);
+        res.redirect("/recipes/community");
+    } catch (error) {
+        console.log(error);
+        res.send("Error updating");
+    }
+});
+
+router.get("/delete/:id", async (req,res)=>{
+    try{
+        const foundRecipe = await Recipe.findById(req.params.id)
+    res.render('recipe-delete',{foundRecipe})
+    }
+    catch(error){
+        console.log(error)
+    }
+})
+
+//
+router.delete("/:id", async (req,res)=>{
+    console.log(req.params)
+    try{
+        const deletedRecipe = await Recipe.findByIdAndDelete(req.params.id)
+        res.redirect("/recipes")
+    }
+    catch(error){
+        console.log(error)
+    }
+})
+//
 module.exports = router;
 
 
 
 
-// Show new recipe form
-router.get('/new', (req, res) => {
-  res.render('recipes/newRecipe');
-});
 
 
 
-// Create new recipe
-router.post('/', async (req, res) => {
-  const { name, ingredients, instructions } = req.body;
-  const newRecipe = new Recipe({ name, ingredients, instructions });
-  await newRecipe.save();
-  res.redirect('/recipes');
-});
 
 
-// Show single recipe
-router.get('/:id', async (req, res) => {
-  const recipe = await Recipe.findById(req.params.id);
-  res.render('recipes/recipeRead', { recipe });
-});
 
 
-// Show update form
-router.get('/:id/update', async (req, res) => {
-  const recipe = await Recipe.findById(req.params.id);
-  res.render('recipes/recipeUpdate', { recipe });
-});
 
 
-// Update recipe
-router.put('/:id', async (req, res) => {
-  const { name, ingredients, instructions } = req.body;
-  await Recipe.findByIdAndUpdate(req.params.id, { name, ingredients, instructions });
-  res.redirect(`/recipes/${req.params.id}`);
-});
-
-
-router.get('/:id/delete', async (req, res) => {
-  const recipe = await Recipe.findById(req.params.id);
-  res.render('recipes/recipeDelete', { recipe });
-});
-
-
-router.get('/delete/:id', async (req, res) => {
-  const foundRecipe = await Recipe.findById(req.params.id);
-  res.render('recipe-delete', { foundRecipe });
-});
-
-
-router.delete('/:id', async (req, res) => {
-  await Recipe.findByIdAndDelete(req.params.id);
-  res.redirect('/recipes/community');
-});
 
