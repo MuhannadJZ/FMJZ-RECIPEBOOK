@@ -34,3 +34,10 @@ router.get('/:id', async (req, res) => {
   const recipe = await Recipe.findById(req.params.id);
   res.render('recipes/recipeRead', { recipe });
 });
+
+
+// Show update form
+router.get('/:id/update', async (req, res) => {
+  const recipe = await Recipe.findById(req.params.id);
+  res.render('recipes/recipeUpdate', { recipe });
+});
