@@ -55,3 +55,16 @@ router.get('/:id/delete', async (req, res) => {
   const recipe = await Recipe.findById(req.params.id);
   res.render('recipes/recipeDelete', { recipe });
 });
+
+
+router.get('/delete/:id', async (req, res) => {
+  const foundRecipe = await Recipe.findById(req.params.id);
+  res.render('recipe-delete', { foundRecipe });
+});
+
+
+router.delete('/:id', async (req, res) => {
+  await Recipe.findByIdAndDelete(req.params.id);
+  res.redirect('/recipes/community');
+});
+
