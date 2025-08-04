@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Recipe</title>
+</head>
+<body>
+    <h1>Update Recipe</h1>
+
+    <form action="/recipes/<%= foundRecipe._id %>?_method=PUT" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="<%= foundRecipe.name %>">
+        <br><br>
+        <label for="instructions">instructions:</label>
+        <input type="text" id="instructions" name="instructions" value="<%= foundRecipe.instructions %>">
+        <br><br>
+        <label for="ingredients">ingredients:</label>
+        <input type="text" id="ingredients" name="ingredients" value="<%= foundRecipe.ingredients %>">
+        <br><br>
+        
+        <button type="submit">Update</button>
+    </form>
+</body>
+</html>
+

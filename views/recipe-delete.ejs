@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Recipe Details</h1>
+
+    <p>Are you sure you want to delete<%= foundRecipe.name %>?</p>
+
+
+
+    <form action="/recipes/<%=foundRecipe._id%>?_method=DELETE" method="post">
+    <button type="submit">Delete Recipe</button>
+
+   </form>
+</body>
+</html>

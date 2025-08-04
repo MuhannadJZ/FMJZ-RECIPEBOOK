@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Recipes</title>
+    <link rel="stylesheet" type="text/css" href="/allrecipes.css">
+</head>
+<body>
+
+    <h1>All Recipes</h1>
+
+    <!-- Container for grid layout -->
+    <div class="recipe-container">
+        <% allRecipes.forEach((oneRecipe) => { %>
+            <div class="recipe-box">
+                <h2 class="recipe-title"><%= oneRecipe.name %></h2>
+                <img src="<%= oneRecipe.image %>" alt="" class="recipe-image">
+                <div class="recipe-actions">
+                    <a href="/recipes/<%=oneRecipe._id%>">See Recipe details</a><br>
+                    <a href="/recipes/<%=oneRecipe._id%>/update">Update Recipe</a><br>
+                    <a href="/recipes/delete/<%= oneRecipe._id %>">Delete Recipe</a><br>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+
+</body>
+</html>

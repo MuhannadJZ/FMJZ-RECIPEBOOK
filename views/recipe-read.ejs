@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Details</title>
+    <link rel="stylesheet" type="text/css" href="/details.css">
+</head>
+<body>
+    <div class="recipe-details">
+        <h1 class="recipe-title"><%= foundRecipe.name %></h1>
+
+        <div class="recipe-info">
+            <h2>Ingredients</h2>
+            <p class="ingredients"><%= foundRecipe.ingredients %></p>
+
+            <h2>Instructions</h2>
+            <p class="instructions"><%= foundRecipe.instructions %></p>
+        </div>
+    </div>
+</body>
+</html>
