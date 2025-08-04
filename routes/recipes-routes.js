@@ -17,3 +17,13 @@ module.exports = router;
 router.get('/new', (req, res) => {
   res.render('recipes/newRecipe');
 });
+
+
+
+// Create new recipe
+router.post('/', async (req, res) => {
+  const { name, ingredients, instructions } = req.body;
+  const newRecipe = new Recipe({ name, ingredients, instructions });
+  await newRecipe.save();
+  res.redirect('/recipes');
+});
