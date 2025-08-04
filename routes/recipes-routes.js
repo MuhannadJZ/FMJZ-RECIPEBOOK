@@ -27,3 +27,10 @@ router.post('/', async (req, res) => {
   await newRecipe.save();
   res.redirect('/recipes');
 });
+
+
+// Show single recipe
+router.get('/:id', async (req, res) => {
+  const recipe = await Recipe.findById(req.params.id);
+  res.render('recipes/recipeRead', { recipe });
+});
